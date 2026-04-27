@@ -1,80 +1,104 @@
-# Fullstack Airbnb Clone ✈️🏨
+# Fullstack Airbnb Clone
 
-**A comprehensive full-stack application inspired by Airbnb, demonstrating proficiency in frontend development with
-React and backend development with NestJS.**
+Monorepo Airbnb-style app built with React, NestJS, PostgreSQL, and S3-compatible storage.
 
-**Disclaimer:** This README was generated with the assistance of AI, but it has been thoroughly reviewed and verified
-for accuracy.
+## Stack
 
-![collage](https://github.com/user-attachments/assets/cbebbe9c-3275-477b-9c70-de5530013f86)
+- `apps/client`: React + Vite
+- `apps/server`: NestJS + TypeORM
+- `postgres`: local database via Docker Compose
+- `s3ninja`: local S3-compatible object storage via Docker Compose
+- `pnpm` + Turborepo
 
-[View all images](https://photos.app.goo.gl/dh3bev79G3tnSRt6A)
+## Requirements
 
-[Video demo](https://youtu.be/tLOEW9Jbt4o)
+- Node.js 20+
+- pnpm 10+
+- Docker
+- Google Maps API key for client search/location features
 
-### Project Overview
+## Setup
 
-This project aims to replicate core Airbnb functionalities, including user authentication, property listing, and booking
-management. It leverages React for the frontend and NestJS for the backend, demonstrating a strong understanding of
-full-stack development principles.
+1. Install dependencies:
 
-### Requirements
+```bash
+pnpm install
+```
 
-* **Google Cloud Platform (GCP):** ☁️ Bucket for storing images and other media.
-* **Docker:** 🐳 Used for running a PostgreSQL database container.
-* **Node.js:** 🟢 Version 20.5.0
+2. Create the root env file:
 
-### Environment Variables
+```bash
+cp .env.example .env
+```
 
-Create environment variable files by referring to the `.env.example` files located in the project's file structure.
-Ensure to add a file named `gcpServiceAccountKey.json`, following the structure provided in
-`gcpServiceAccountKey.example.json`.
+3. Start local services:
 
-### Features
+```bash
+docker compose up -d
+```
 
-1. **Authentication and Authorization** 🔐: Implements a secure, token-based authentication system using JWTs for access
-   tokens and refresh tokens to manage session longevity. The backend handles token issuance, verification, and renewal,
-   ensuring secure user sessions across server-client communications.
+4. Start the apps:
 
-2. **Listing Management** 🏠: A comprehensive CRUD (Create, Read, Delete) system for managing property listings, backed
-   by role-based access control to allow only hosts to add or delete listings. Update functionality for listings is
-   intentionally excluded to maintain consistency and avoid potential data conflicts or confusion between guest and host
-   expectations.
+```bash
+pnpm dev
+```
 
-3. **Booking System** 📅: A fully integrated booking feature that allows users to view availability, submit bookings, and
-   manage reservations. This feature incorporates validation checks, availability status, and integrates smoothly with
-   the backend database to ensure consistent data synchronization and seamless user experience.
+Client runs on `http://localhost:5173`.
+Server runs on `http://localhost:8080`.
 
-4. **Advanced Search Functionality** 🔍: An optimized search system using indexed database queries to retrieve listings
-   based on specific criteria such as location, price range, amenities, and availability.
+## Database
 
-5. **Map-Based Search and Location Selection** 🗺️: Powered by interactive map integration (e.g., Google Maps API), users
-   can search for listings geographically and visualize nearby properties. Additionally, an interactive map is available
-   for hosts, allowing them to select and pin precise locations while listing a property.
+- TypeORM migrations are enabled on server startup
+- `synchronize` is disabled
+- migration history is stored in `migrations_history`
 
-### Limitations
+Useful commands:
 
-1. **Payment System:** 💳 Not implemented due to complexities and third-party integrations.
-2. **Recommendation System:** 🧠 Not implemented due to required machine learning capabilities.
+```bash
+pnpm --filter @airbnb-clone/server migration:run
+pnpm --filter @airbnb-clone/server migration:revert
+pnpm --filter @airbnb-clone/server migration:generate --name YourMigrationName
+```
 
-### Demonstrated Skills and Knowledge
+## Seed Data
 
-* **Frontend Development with React:** ⚛️ Component-based architecture, state management, API integration, and UI
-  design.
-* **Backend Development with NestJS:** nestjs.io Modular architecture, RESTful API design, database interactions,
-  authentication, authorization, error handling, and logging.
-* **Full-Stack Integration:** 🔗 Client-server communication, data synchronization, and deployment.
-* **Version Control and Collaboration:** 🤝 Git and GitHub for version control and collaborative development.
+Seed data lives in `scripts/seed/data.json`.
 
-**By undertaking this project, I have honed my skills in:**
+Run:
 
-* **Full-stack development:** Designing, implementing, and deploying complex web applications.
-* **Frontend development:** Building user-friendly and responsive user interfaces.
-* **Backend development:** Creating scalable and robust backend services.
-* **Database management:** Interacting with databases to store and retrieve data efficiently.
-* **API design and integration:** Designing and consuming RESTful APIs.
-* **Version control:** Managing code changes effectively using Git.
-* **Collaboration:** Working effectively with other developers to achieve project goals.
+```bash
+pnpm seed
+```
 
-I am confident that this project demonstrates my ability to tackle challenging full-stack development tasks and deliver
-high-quality solutions.
+This seeds users, listings, locations, and listing images.
+
+## Local Storage
+
+The app uses S3-compatible storage.
+
+- Local endpoint: `http://localhost:9444`
+- Local service: `s3ninja`
+
+Seeded search recommendations in the client are based on destinations from `scripts/seed/data.json`.
+
+## Scripts
+
+```bash
+pnpm dev
+pnpm dev:client
+pnpm dev:server
+pnpm build
+pnpm lint
+pnpm seed
+```
+
+## Repo Layout
+
+```text
+apps/
+  client/
+  server/
+docker/
+scripts/seed/
+docs/
+```

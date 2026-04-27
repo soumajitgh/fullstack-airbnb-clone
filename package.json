@@ -1,15 +1,19 @@
 {
-  "name": "airbnb-clone",
+  "name": "fullstack-airbnb-clone",
   "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.18.2",
   "workspaces": [
-    "packages/server",
-    "packages/client",
-    "packages/types"
+    "apps/*"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:client": "npm run dev --workspace=packages/client",
-    "dev:server": "npm run start:dev --workspace=packages/server"
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "dev:client": "pnpm --filter @airbnb-clone/client dev",
+    "dev:server": "pnpm --filter @airbnb-clone/server start:dev",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "seed": "pnpm --filter @airbnb-clone/server seed"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +21,8 @@
   "description": "",
   "dependencies": {
     "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.8"
   }
 }

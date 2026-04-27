@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: airbnb-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - '${DB_PORT}:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  s3ninja:
+    image: scireum/s3-ninja:8.7.0
+    container_name: airbnb-s3
+    restart: unless-stopped
+    ports:
+      - '9444:9000'
+    volumes:
+      - s3ninja-data:/home/sirius/data
+
+volumes:
+  postgres-data:
+  s3ninja-data:
