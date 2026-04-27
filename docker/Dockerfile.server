@@ -2,6 +2,8 @@ FROM node:20-alpine AS builder
 
 WORKDIR /repo
 
+RUN apk add --no-cache python3 make g++
+
 RUN corepack enable
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml turbo.json .npmrc ./
@@ -16,6 +18,8 @@ RUN pnpm --filter @airbnb-clone/server build
 FROM node:20-alpine AS runner
 
 WORKDIR /app
+
+RUN apk add --no-cache python3 make g++
 
 RUN corepack enable
 
